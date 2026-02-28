@@ -23,10 +23,10 @@ class Board:
             for x in range(width):
                 r = random.random()
                 is_water = r >= island_chance
+                
                 sector_x = x // sector_width
                 sector_y = y // sector_width
                 sector = sector_x + (sector_y * sectors_per_row) + 1
-                sector = ((x // sector_width) + ((y // sector_width) * width // sector_width)) + 1
 
                 cell = Cell(col=x, 
                             row=y, 
