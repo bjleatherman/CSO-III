@@ -1,7 +1,6 @@
 from pydantic import BaseModel, Field, model_validator
 from typing import List, Optional, Tuple, Dict
 from datetime import datetime
-from Model.game_rules import GameRules
 from enums import *
 import uuid
 import json
@@ -67,3 +66,9 @@ class Mine(BaseModel):
     address: Address
     is_active: bool
     turn_detonated: int = None
+
+class SubSystemBlueprint(BaseModel):
+    system_id: int
+    pipe_group: Optional[PipeGroup]
+    direction_group: Direction
+    power_group: PowerGroup

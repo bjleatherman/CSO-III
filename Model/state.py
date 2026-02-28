@@ -16,9 +16,6 @@ class GameState(BaseModel):
     turn_number: int = 0
     player_turn: int = 0
 
-    # Board Info
-    player_location: List[Tuple[Optional[int], Optional[int]]] = [(None, None), (None, None)]
-
     # Player Data
     subs: List[Submarine]
 
@@ -30,11 +27,11 @@ class GameHistory(BaseModel):
     
     game_rules:GameRules
     grid: List[List[Cell]]
-    history: List[GameState] = []
-    
-    direction_history: List[List[Direction]] = [[],[]]
-    turn_history: List[Optional[Turn]] = []
-    turn_headline_history: List[Optional[TurnHeadline]] = []
+    history: List[GameState]
+
+    direction_history: List[List[Direction]] = Field(default_factory=lambda: [[], []])
+    turn_history: List[Optional[Turn]] = Field(default_factory=list)
+    turn_headline_history: List[Optional[TurnHeadline]] = Field(default_factory=list)
 
     @classmethod
     def create_initial_state(cls, game_rules:GameRules):
@@ -46,9 +43,14 @@ class GameHistory(BaseModel):
             island_chance=game_rules.island_prob, 
             sector_width=game_rules.sector_width)
 
-        initial_state = GameState()
+        
+        subs = [Submarine.create_default(player_id=x) for x in range(game_rules.number_of_players)]
+        
+        initial_state = GameState(subs=subs)
 
-        return cls(grid=grid, history=[initial_state], game_rules=game_rules)
+        return cls(grid=grid, 
+                   history=[initial_state], 
+                   game_rules=game_rules)
 
     def get_current_game_state(self):
         return self.history[-1]
