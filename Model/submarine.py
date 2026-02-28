@@ -32,7 +32,7 @@ class Submarine(BaseModel):
         
         # Creates the systems id -> status dict to track systems status. 
         # TODO: Get rid of the magic numbers
-        initial_system_status = {i: True for i in range(0, 25)}
+        initial_system_status = {i: True for i in range(0, 24)}
         
         return cls(
             player_id=player_id,
