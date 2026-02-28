@@ -1,6 +1,6 @@
-from state_manager import StateManager
-from file_manager import FileManager
-from display import Display
+from Core.state_manager import StateManager
+from Utilities.file_manager import FileManager
+from Utilities.display import Display
 
 def main():
     

@@ -3,7 +3,7 @@ from typing import List, Optional, Tuple, Dict
 from datetime import datetime
 from Model.game_rules import GameRules
 from Model.domain_models import *
-from enums import *
+from Model.enums import *
 import uuid
 import json
 

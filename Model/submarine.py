@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Tuple, Dict
 from Model.domain_models import *
 from Model.information import *
-from enums import *
+from Model.enums import *
 import uuid
 
 class Charges(BaseModel):

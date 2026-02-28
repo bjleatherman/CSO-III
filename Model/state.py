@@ -5,7 +5,7 @@ from Model.game_rules import GameRules
 from Model.domain_models import *
 from Model.information import *
 from Model.submarine import *
-from enums import *
+from Model.enums import *
 import uuid
 import json
 
@@ -36,7 +36,7 @@ class GameHistory(BaseModel):
     @classmethod
     def create_initial_state(cls, game_rules:GameRules):
 
-        from board import Board
+        from Utilities.board import Board
         grid = Board.generate_grid(
             length=game_rules.length, 
             width=game_rules.width, 

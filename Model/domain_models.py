@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, model_validator
 from typing import List, Optional, Tuple, Dict
 from datetime import datetime
-from enums import *
+from Model.enums import *
 import uuid
 import json
 
