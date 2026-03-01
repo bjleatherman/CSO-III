@@ -64,6 +64,7 @@ class Answer(BaseModel):
 class Mine(BaseModel):
     address: Address
     is_active: bool = True
+    turn_created: int
     turn_detonated: int = None
 
     def detonate(self, turn_number:int):

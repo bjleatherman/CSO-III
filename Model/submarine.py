@@ -26,7 +26,7 @@ class Submarine(BaseModel):
     is_surfaced: bool = False
     surfaced_turn_count: int = 0
     location: Optional[Address] = None
-    location_history: Optional[List[Address]] = None
+    location_history: Optional[Dict[int, Address]] = None
 
     @classmethod
     def create_default(cls, player_id: int):
@@ -44,15 +44,31 @@ class Submarine(BaseModel):
     #---LOCATION---#
     #--------------#
 
-    def set_location(self, address:Address):
+    def set_location(self, address:Address, turn_number:int):
         self.location = address
-        self.location_history.append(address)
+        self.location_history[turn_number] = address
 
-    def spawn_at(self, col_id:int, row_id:int):
+    def spawn_at(self, col_id:int, row_id:int, turn_number:int):
         address = Address(col_id=col_id, row_id=row_id)
-        self.set_location(address)
+        self.set_location(address, turn_number=turn_number)
 
-    
+    def start_surface(self, turn_number:int):
+        self.is_surfaced = True
+        self.surfaced_turn_count = 1
+        self.set_location(self.location, turn_number=turn_number)
+
+    def increment_surface(self, turn_number:int):
+        self.surfaced_turn_count += 1
+        self.set_location(self.set_location, turn_number=turn_number)
+
+    def end_surface(self, turn_number:int):
+        self.is_surfaced = False
+        self.surfaced_turn_count = 0
+        self.repair_all_systems()
+
+        # TODO: Do I need to have the move action inside  of the end_surface funciton?
+            # I feel like this should be handled by the validator?
+
 
     #------------#
     #---DAMAGE---#
@@ -78,7 +94,9 @@ class Submarine(BaseModel):
         for system_id in system_ids:
             self.repair_system_by_id(system_id=system_id)
 
-
+    def repair_all_systems(self):
+        for system_id, repair_status in self.systems_status:
+            self.systems_status[system_id] = True
 
     #-------------#
     #---CHARGES---#
@@ -88,7 +106,7 @@ class Submarine(BaseModel):
     def charge_mine(self):
         self.charges.mine += 1
 
-    def drop_mine(self, col_id:int, row_id:int):
+    def drop_mine(self, col_id:int, row_id:int, turn_number:int):
         # Spend the mine charge
         self.charges.mine = 0
 
@@ -101,7 +119,7 @@ class Submarine(BaseModel):
             next_id = max(self.mines_laid.keys()) + 1
 
         address = Address(col_id=col_id, row_id=row_id)
-        mine = Mine(address=address)
+        mine = Mine(address=address, turn_created=turn_number)
 
         self.mines_laid[next_id] = mine
 
