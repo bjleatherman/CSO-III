@@ -26,14 +26,14 @@ class Submarine(BaseModel):
     is_surfaced: bool = False
     surfaced_turn_count: int = 0
     location: Optional[Address] = None
-    location_history: Optional[Dict[int, Address]] = None
+    location_history: Dict[int, Address] = Field(default_factory=dict)
 
     @classmethod
     def create_default(cls, player_id: int):
         
         # Creates the systems id -> status dict to track systems status. 
         # TODO: Get rid of the magic numbers
-        initial_system_status = {i: True for i in range(0, 24)}
+        initial_system_status = {i: True for i in range(24)}
         
         return cls(
             player_id=player_id,
@@ -59,15 +59,12 @@ class Submarine(BaseModel):
 
     def increment_surface(self, turn_number:int):
         self.surfaced_turn_count += 1
-        self.set_location(self.set_location, turn_number=turn_number)
+        self.set_location(self.location, turn_number=turn_number)
 
     def end_surface(self, turn_number:int):
         self.is_surfaced = False
         self.surfaced_turn_count = 0
         self.repair_all_systems()
-
-        # TODO: Do I need to have the move action inside  of the end_surface funciton?
-            # I feel like this should be handled by the validator?
 
 
     #------------#
@@ -75,9 +72,7 @@ class Submarine(BaseModel):
     #------------#
 
     def take_damage(self, damage_amount:int):
-        '''Return True if Sub is Still Alive, False if Sub Sank'''
-        self.damage -= self.damage_amount
-        return self.damage > 0
+        self.damage += damage_amount
     
     
     #-------------#
@@ -95,7 +90,7 @@ class Submarine(BaseModel):
             self.repair_system_by_id(system_id=system_id)
 
     def repair_all_systems(self):
-        for system_id, repair_status in self.systems_status:
+        for system_id in self.systems_status:
             self.systems_status[system_id] = True
 
     #-------------#
