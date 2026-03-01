@@ -1,4 +1,4 @@
-from Core.state_manager import StateManager
+from Engine.state_manager import StateManager
 from Utilities.file_manager import FileManager
 from Utilities.display import Display
 

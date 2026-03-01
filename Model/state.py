@@ -29,9 +29,9 @@ class GameHistory(BaseModel):
     grid: List[List[Cell]]
     history: List[GameState]
 
-    direction_history: List[List[Direction]] = Field(default_factory=lambda: [[], []])
-    turn_history: List[Optional[Turn]] = Field(default_factory=list)
-    turn_headline_history: List[Optional[TurnHeadline]] = Field(default_factory=list)
+    direction_history: List[Dict[int, Direction]] = Field(default_factory=lambda: [{}, {}])
+    turn_history: List[Optional[Dict[int, Turn]]] = Field(default_factory=lambda: [{}, {}])
+    turn_headline_history: List[Optional[Dict[int, TurnHeadline]]] = Field(default_factory=lambda: [{}, {}])
 
     @classmethod
     def create_initial_state(cls, game_rules:GameRules):

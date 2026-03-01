@@ -57,15 +57,21 @@ class Cell(BaseModel):
         return data
 
 class Answer(BaseModel):
-    '''Used as to relay infomation to the players'''
+    '''Used to relay infomation to the players'''
     drone_answer: Optional[bool] = None
     sonar_answer: Optional[Dict[MapIdLabels,int]] = None
 
 class Mine(BaseModel):
-    mine_id: int
     address: Address
-    is_active: bool
+    is_active: bool = True
     turn_detonated: int = None
+
+    def detonate(self, turn_number:int):
+        if not self.is_active:
+            raise ValueError(f'Mine has already been activated')
+        
+        self.is_active = False
+        self.turn_detonated = turn_number
 
 class SubSystemBlueprint(BaseModel):
     system_id: int
