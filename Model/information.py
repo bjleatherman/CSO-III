@@ -20,7 +20,7 @@ class OpponentAction(BaseModel):
     opp_surface_duration_remaining: Optional[int] = None
     opp_received_damage: Optional[bool] = None
     opp_damage_source: Optional[DamageSource] = None
-    opp_answer: Optional[Answer] = None
+    opp_answer: Optional[SonarAnswer] = None
 
 class TurnHeadline(BaseModel):
     '''The data that is shown to a player at the beginning of their turn. It should contain a summary of the public data that happened in the previous turn'''
@@ -43,4 +43,4 @@ class Turn(BaseModel):
     power_charged: Optional[Power]
     power_used: Optional[Power]
     mine_id_triggered: Optional[int]
-    answer: Optional[Answer]
+    sonar_answer: Optional[SonarAnswer]
