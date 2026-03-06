@@ -18,3 +18,6 @@ class StateManager:
     def get_current_state(self):
         return self.history.get_current_game_state()
     
+    def process_turn(self, request: FullTurnRequest) -> GameHistory:
+
+        candidate_state = self.history.create_next_state()
