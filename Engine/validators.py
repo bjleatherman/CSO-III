@@ -1,14 +1,29 @@
 from Model.state import *
 from Model.api_models import *
+from Model.game_rules import *
 
 class ActionValidator:
 
-    NotImplemented
+    @staticmethod
+    def validate_spawn(candidate_state:GameState, spawn_request: SpawnRequest, board:Board, player_id:int) -> None:
+        """Validates board boundaries and terrain constraints for initial deployment."""
+        
+        msg = 'Spawn Request Invlaid |'
+        spawn_cell=board.get_cell(
+            col_id=spawn_request.col_id, 
+            row_id=spawn_request.row_id
+            )
 
-    # @staticmethod
-    # def validate_spawn(history: GameHistory, request: SpawnRequest) -> None:
-    #     """Validates board boundaries and terrain constraints for initial deployment."""
-    #     pass # Implementation from previous steps
+        if candidate_state.subs[player_id].location.name is not None:
+            raise ValueError(f'{msg} Player {player_id} already exists at {candidate_state.subs[player_id].location.name}')
+
+        # Must be in bounds
+        if spawn_cell is None:
+            raise ValueError(f'{msg} {spawn_request} : No such cell exists')
+
+        if not spawn_cell.is_water:
+            raise ValueError(f'{msg} {spawn_request} : Cell is not water')
+       
 
     # @staticmethod
     # def validate_movement_phase(candidate_state: GameState, history: GameHistory, player_id: int, direction: Direction) -> None:

@@ -7,7 +7,6 @@ from Model.submarine import *
 from Model.domain_models import *
 
 class SpawnRequest(BaseModel):
-    player_id: int
     col_id: int
     row_id: int
 
@@ -16,12 +15,6 @@ class DirectionRequest(BaseModel):
 
 class SurfaceRequest(BaseModel):
     surface: bool = True
-
-class MaintainSurfaceRequest(BaseModel):
-    surface: bool = True
-
-class EndSurfaceRequest(BaseModel):
-    end_surface: bool = True
 
 class ChargePowerRequest(BaseModel):
     power: Power
@@ -49,13 +42,27 @@ class SonarAnswerRequest(BaseModel):
     # @classmethod
     # def set_sonar_answer_request(cls, ):
 
+class DroneAnswerRequest(BaseModel):
+    drone_answer: Optional[bool] = None
+
 class FullTurnRequest(BaseModel):
+    
+    # Player
     player_id: int
+
+    # Spawn Request
+    spawn: Optional[SpawnRequest] = None
+
+    # Surface
     is_surfacing: bool = False
     
+    # Pending Questions Answered
+    sonar_answer_phase: Optional[SonarAnswerRequest] = None
+    drone_answer_phase: Optional[DroneAnswerRequest] = None
+    
+    # Normal Turn
     movement_phase: Optional[Direction] = None
-    charge_phase: Optional[ChargePowerRequest] = None
+    charge_phase: Optional[ChargePowerRequest] = None 
     subsystem_phase: Optional[SubSystemRequest] = None
     power_phase: Optional[UsePowerRequest] = None
     mine_detonation_phase: Optional[DetonateMineRequest] = None
-    sonar_answer_phase: Optional[SonarAnswerRequest] = None

@@ -6,6 +6,7 @@ from Model.domain_models import *
 from Model.information import *
 from Model.submarine import *
 from Model.enums import *
+from Model.board import *
 import uuid
 import json
 
@@ -17,7 +18,7 @@ class GameState(BaseModel):
     player_turn: int = 0
 
     # Player Data
-    subs: List[Submarine]
+    subs: Dict[int, Submarine]
 
     def create_next_state(self, turn_number:int, player_turn:int) -> 'GameState':
         '''Creates a deep copy of the turn state and advances the turn clock'''
@@ -34,38 +35,41 @@ class GameHistory(BaseModel):
     save_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     created_at: datetime = Field(default_factory=datetime.now)
 
-    turn_number: int = 0
+    turn_number: int = 0 
     player_turn: int = 0
     
     game_rules:GameRules
-    grid: List[List[Cell]]
+    board: Board
     history: Dict[int, GameState]
 
     direction_history: List[Dict[int, Direction]] = Field(default_factory=list)
     turn_history: List[Dict[int, Turn]] = Field(default_factory=list)
     turn_headline_history: List[Dict[int, TurnHeadline]] = Field(default_factory=list)
 
+
     @classmethod
     def create_initial_state(cls, game_rules:GameRules):
+        ''' Creates the board, GameHistory data structures, and the starting state of the game'''
+        
+        player_count = game_rules.number_of_players
 
-        from Utilities.board import Board
-        grid = Board.generate_grid(
+        # Generate a new board using the game rules
+        board = Board.generate_board(
             length=game_rules.length, 
             width=game_rules.width, 
             island_chance=game_rules.island_prob, 
             sector_width=game_rules.sector_width)
 
+        # Create subs for each player
+        subs = {x: Submarine.create_default(player_id=x) for x in range(player_count)}
+        initial_state = {0: GameState(subs=subs)}
+
         
-        subs = [Submarine.create_default(player_id=x) for x in range(game_rules.number_of_players)]
-        initial_state = { 0: GameState(subs=subs) }
-
-        player_count = game_rules.number_of_players
-
         init_direction_history = [{} for _ in range(player_count)]
         init_turn_history = [{} for _ in range(player_count)]
         init_turn_headline_history = [{} for _ in range(player_count)]
 
-        return cls(grid=grid, 
+        return cls(board=board, 
                    history=initial_state, 
                    game_rules=game_rules,
                    direction_history=init_direction_history,
