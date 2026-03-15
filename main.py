@@ -16,7 +16,7 @@ def main():
         print(f'Loaded Game: {state_manager.history.save_id}')
 
     current_state = state_manager.get_current_state()
-    Display.draw_state(state=current_state, grid=state_manager.history.grid)
+    Display.draw_state(state=current_state, grid=state_manager.history.board.grid)
 
 if __name__ == '__main__':
     main()
